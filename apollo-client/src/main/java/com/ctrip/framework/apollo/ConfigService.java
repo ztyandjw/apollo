@@ -18,6 +18,7 @@ public class ConfigService {
   private volatile ConfigManager m_configManager;
   private volatile ConfigRegistry m_configRegistry;
 
+  //单例模式获取configManager
   private ConfigManager getManager() {
     if (m_configManager == null) {
       synchronized (this) {
@@ -29,7 +30,7 @@ public class ConfigService {
 
     return m_configManager;
   }
-
+  //单例模式获取configRegistry
   private ConfigRegistry getRegistry() {
     if (m_configRegistry == null) {
       synchronized (this) {
