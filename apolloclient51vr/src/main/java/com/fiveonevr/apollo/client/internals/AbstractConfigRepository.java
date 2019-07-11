@@ -1,7 +1,6 @@
 package com.fiveonevr.apollo.client.internals;
 
-import com.ctrip.framework.apollo.tracer.Tracer;
-import com.ctrip.framework.apollo.util.ExceptionUtil;
+import com.fiveonevr.apollo.client.util.ExceptionUtil;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

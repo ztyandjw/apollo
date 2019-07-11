@@ -19,7 +19,7 @@ import java.util.Set;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 
-
+//BeanFactoryPostProcessor
 public class PropertySourcesProcessor implements BeanFactoryPostProcessor, EnvironmentAware, PriorityOrdered {
     private static final Multimap<Integer, String> NAMESPACE_NAMES = LinkedHashMultimap.create();
     private static final Set<BeanFactory> AUTO_UPDATE_INITIALIZED_BEAN_FACTORIES = Sets.newConcurrentHashSet();

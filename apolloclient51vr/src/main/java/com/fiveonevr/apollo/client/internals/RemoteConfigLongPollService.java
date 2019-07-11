@@ -1,9 +1,11 @@
 package com.fiveonevr.apollo.client.internals;
 
 
+import com.fiveonevr.apollo.client.build.ApolloInjector;
 import com.fiveonevr.apollo.client.constant.ConfigConsts;
-import com.fiveonevr.apollo.client.core.SchedulePolicy;
+import com.fiveonevr.apollo.client.core.*;
 import com.fiveonevr.apollo.client.util.ConfigUtil;
+import com.fiveonevr.apollo.client.util.ExceptionUtil;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.*;
@@ -109,7 +111,6 @@ public class RemoteConfigLongPollService {
       m_longPollStarted.set(false);
       ApolloConfigException exception =
           new ApolloConfigException("Schedule long polling refresh failed", ex);
-      Tracer.logError(exception);
       logger.warn(ExceptionUtil.getDetailMessage(exception));
     }
   }
@@ -129,7 +130,6 @@ public class RemoteConfigLongPollService {
         } catch (InterruptedException e) {
         }
       }
-      Transaction transaction = Tracer.newTransaction("Apollo.ConfigService", "pollNotification");
       String url = null;
       try {
         if (lastServiceDto == null) {
@@ -145,7 +145,6 @@ public class RemoteConfigLongPollService {
         HttpRequest request = new HttpRequest(url);
         request.setReadTimeout(LONG_POLLING_READ_TIMEOUT);
 
-        transaction.addData("Url", url);
 
         final HttpResponse<List<ApolloConfigNotification>> response =
             m_httpUtil.doGet(request, m_responseType);
@@ -154,7 +153,6 @@ public class RemoteConfigLongPollService {
         if (response.getStatusCode() == 200 && response.getBody() != null) {
           updateNotifications(response.getBody());
           updateRemoteNotifications(response.getBody());
-          transaction.addData("Result", response.getBody().toString());
           notify(lastServiceDto, response.getBody());
         }
 
@@ -164,12 +162,8 @@ public class RemoteConfigLongPollService {
         }
 
         m_longPollFailSchedulePolicyInSecond.success();
-        transaction.addData("StatusCode", response.getStatusCode());
-        transaction.setStatus(Transaction.SUCCESS);
       } catch (Throwable ex) {
         lastServiceDto = null;
-        Tracer.logEvent("ApolloConfigException", ExceptionUtil.getDetailMessage(ex));
-        transaction.setStatus(ex);
         long sleepTimeInSecond = m_longPollFailSchedulePolicyInSecond.fail();
         logger.warn(
             "Long polling failed, will retry in {} seconds. appId: {}, cluster: {}, namespaces: {}, long polling url: {}, reason: {}",
@@ -180,7 +174,6 @@ public class RemoteConfigLongPollService {
           //ignore
         }
       } finally {
-        transaction.complete();
       }
     }
   }
@@ -203,7 +196,6 @@ public class RemoteConfigLongPollService {
         try {
           remoteConfigRepository.onLongPollNotified(lastServiceDto, remoteMessages);
         } catch (Throwable ex) {
-          Tracer.logError(ex);
         }
       }
     }

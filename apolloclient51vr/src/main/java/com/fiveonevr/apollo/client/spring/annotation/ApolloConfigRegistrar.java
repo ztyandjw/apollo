@@ -20,7 +20,6 @@ public class ApolloConfigRegistrar implements ImportBeanDefinitionRegistrar {
                 .getAnnotationAttributes(TimApollo.class.getName()));
         String[] namespaces = attributes.getStringArray("value");
         int order = attributes.getNumber("order");
-        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, Hello.class.getName(), Hello.class);
         BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, SpringValueDefinitionProcessor.class.getName(), SpringValueDefinitionProcessor.class);
         PropertySourcesProcessor.addNamespaces(Lists.newArrayList(namespaces), order);
 //
@@ -31,8 +30,8 @@ public class ApolloConfigRegistrar implements ImportBeanDefinitionRegistrar {
 //        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, PropertySourcesPlaceholderConfigurer.class.getName(),
 //                PropertySourcesPlaceholderConfigurer.class, propertySourcesPlaceholderPropertyValues);
 //
-//        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, PropertySourcesProcessor.class.getName(),
-//                PropertySourcesProcessor.class);
+        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, PropertySourcesProcessor.class.getName(),
+                PropertySourcesProcessor.class);
 //
 //        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ApolloAnnotationProcessor.class.getName(),
 //                ApolloAnnotationProcessor.class);

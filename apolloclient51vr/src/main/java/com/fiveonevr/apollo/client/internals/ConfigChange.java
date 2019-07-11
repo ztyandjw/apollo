@@ -1,7 +1,7 @@
 package com.fiveonevr.apollo.client.internals;
 
 
-import com.ctrip.framework.apollo.enums.PropertyChangeType;
+import com.fiveonevr.apollo.client.enums.PropertyChangeType;
 
 /**
  * Holds the information for a config change.

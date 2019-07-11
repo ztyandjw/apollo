@@ -2,18 +2,14 @@ package com.fiveonevr.apollo.client.spi;
 
 
 import com.fiveonevr.apollo.client.build.ApolloInjector;
-import com.fiveonevr.apollo.client.internals.Config;
-import com.fiveonevr.apollo.client.internals.ConfigFile;
-import com.fiveonevr.apollo.client.internals.ConfigFileFormat;
-import com.fiveonevr.apollo.client.internals.LocalFileConfigRepository;
+import com.fiveonevr.apollo.client.internals.*;
 import com.fiveonevr.apollo.client.util.ConfigUtil;
-import com.sun.deploy.config.DefaultConfig;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Jason Song(song_s@ctrip.com)
- */
+
 public class DefaultConfigFactory implements ConfigFactory {
   private static final Logger logger = LoggerFactory.getLogger(DefaultConfigFactory.class);
   private ConfigUtil m_configUtil;
@@ -83,17 +79,18 @@ public class DefaultConfigFactory implements ConfigFactory {
         return format;
       }
     }
-//
-//    return ConfigFileFormat.Properties;
-//  }
-//
-//  String trimNamespaceFormat(String namespaceName, ConfigFileFormat format) {
-//    String extension = "." + format.getValue();
-//    if (!namespaceName.toLowerCase().endsWith(extension)) {
-//      return namespaceName;
-//    }
-//
-//    return namespaceName.substring(0, namespaceName.length() - extension.length());
-//  }
+
+    return ConfigFileFormat.Properties;
+  }
+
+  String trimNamespaceFormat(String namespaceName, ConfigFileFormat format) {
+    String extension = "." + format.getValue();
+    if (!namespaceName.toLowerCase().endsWith(extension)) {
+      return namespaceName;
+    }
+
+    return namespaceName.substring(0, namespaceName.length() - extension.length());
+  }
+
 
 }
