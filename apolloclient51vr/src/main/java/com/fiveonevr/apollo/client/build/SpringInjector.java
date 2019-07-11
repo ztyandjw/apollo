@@ -2,6 +2,8 @@ package com.fiveonevr.apollo.client.build;
 
 import com.fiveonevr.apollo.client.exceptions.ApolloConfigException;
 import com.fiveonevr.apollo.client.spring.config.ConfigPropertySourceFactory;
+import com.fiveonevr.apollo.client.spring.property.PlaceholderHelper;
+import com.fiveonevr.apollo.client.spring.property.SpringValueRegistry;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -40,9 +42,9 @@ public class SpringInjector {
   private static class SpringModule extends AbstractModule {
     @Override
     protected void configure() {
-//      bind(PlaceholderHelper.class).in(Singleton.class);
+      bind(PlaceholderHelper.class).in(Singleton.class);
       bind(ConfigPropertySourceFactory.class).in(Singleton.class);
-//      bind(SpringValueRegistry.class).in(Singleton.class);
+      bind(SpringValueRegistry.class).in(Singleton.class);
     }
   }
 }

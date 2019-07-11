@@ -20,7 +20,7 @@ public class ApolloConfigRegistrar implements ImportBeanDefinitionRegistrar {
                 .getAnnotationAttributes(TimApollo.class.getName()));
         String[] namespaces = attributes.getStringArray("value");
         int order = attributes.getNumber("order");
-        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, SpringValueDefinitionProcessor.class.getName(), SpringValueDefinitionProcessor.class);
+//        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, SpringValueDefinitionProcessor.class.getName(), SpringValueDefinitionProcessor.class);
         PropertySourcesProcessor.addNamespaces(Lists.newArrayList(namespaces), order);
 //
 //        Map<String, Object> propertySourcesPlaceholderPropertyValues = new HashMap<>();
@@ -30,6 +30,7 @@ public class ApolloConfigRegistrar implements ImportBeanDefinitionRegistrar {
 //        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, PropertySourcesPlaceholderConfigurer.class.getName(),
 //                PropertySourcesPlaceholderConfigurer.class, propertySourcesPlaceholderPropertyValues);
 //
+//        BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, SpringValueProcessor.class.getName(), SpringValueProcessor.class);
         BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, PropertySourcesProcessor.class.getName(),
                 PropertySourcesProcessor.class);
 //
