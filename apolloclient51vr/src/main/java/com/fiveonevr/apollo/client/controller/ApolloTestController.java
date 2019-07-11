@@ -10,13 +10,13 @@ import java.util.Map;
 
 @RestController
 public class ApolloTestController {
-    @Value("${TEMPLATES}")
-    private String CACHES;
+//    @Value("${DEBUG}")
+    private String DEBUG;
     @GetMapping("test")
     public Object test() {
-        Map map =  this.toObject(CACHES, Map.class);
-        System.out.println(map);
-        return map;
+//        Map map =  this.toObject(CACHES, Map.class);
+        System.out.println(DEBUG);
+        return DEBUG;
     }
 
     private<a> a  toObject(String content, Class<a> clazz) {

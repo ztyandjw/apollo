@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -22,15 +21,6 @@ public class HttpUtil {
     }
     public <T> HttpResponse<T> doGet(HttpRequest httpRequest, final Class<T> responseType) {
         Function<String, T> convertResponse = (input) -> gson.fromJson(input, responseType);
-        return doGetWithSerializeFunction(httpRequest, convertResponse);
-    }
-    public <T> HttpResponse<T> doGet(HttpRequest httpRequest, final Type responseType) {
-        com.google.common.base.Function<String, T> convertResponse = new com.google.common.base.Function<String, T>() {
-            @Override
-            public T apply(String input) {
-                return gson.fromJson(input, responseType);
-            }
-        };
         return doGetWithSerializeFunction(httpRequest, convertResponse);
     }
 
@@ -90,13 +80,16 @@ public class HttpUtil {
                 } catch (IOException ex) {
                 }
             }
+
             if (esr != null) {
                 try {
                     esr.close();
                 } catch (IOException ex) {
+                    // ignore
                 }
             }
         }
+
         throw new ApolloConfigStatusCodeException(statusCode,
                 String.format("Get operation failed for %s", httpRequest.getUrl()));
     }
