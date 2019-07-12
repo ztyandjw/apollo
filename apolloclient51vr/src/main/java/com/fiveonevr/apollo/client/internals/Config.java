@@ -150,7 +150,7 @@ public interface Config {
    * example (case insensitive). Examples:
    * <pre>
    *    "123MS"          -- parses as "123 milliseconds"
-   *    "20S"            -- parses as "20 seconds"
+   *    "20S"            -- parses as "20 dseconds"
    *    "15M"            -- parses as "15 minutes" (where a minute is 60 seconds)
    *    "10H"            -- parses as "10 hours" (where an hour is 3600 seconds)
    *    "2D"             -- parses as "2 days" (where a day is 24 hours or 86400 seconds)
