@@ -1,5 +1,7 @@
 package com.fiveonevr.apollo.client;
 
+import com.fiveonevr.apollo.client.exceptions.ApolloConfigException;
+
 /**
  * @author T1m Zhang(49244143@qq.com) 2019/7/12.
  */
@@ -13,7 +15,6 @@ public class ConfigService {
         if(configManager == null) {
             synchronized (this) {
                 if(configManager == null) {
-
                 }
             }
         }
