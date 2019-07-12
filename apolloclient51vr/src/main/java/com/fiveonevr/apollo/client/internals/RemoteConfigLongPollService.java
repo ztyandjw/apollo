@@ -84,6 +84,8 @@ public class RemoteConfigLongPollService {
   }
 
   private void startLongPolling() {
+    logger.info("3=============================================3");
+
     if (!m_longPollStarted.compareAndSet(false, true)) {
       //already started
       return;
@@ -120,9 +122,11 @@ public class RemoteConfigLongPollService {
   }
 
   private void doLongPollingRefresh(String appId, String cluster, String dataCenter) {
+    logger.info("1=============================================1");
     final Random random = new Random();
     ServiceDTO lastServiceDto = null;
     while (!m_longPollingStopped.get() && !Thread.currentThread().isInterrupted()) {
+      System.out.println("here");
       if (!m_longPollRateLimiter.tryAcquire(5, TimeUnit.SECONDS)) {
         //wait at most 5 seconds
         try {
@@ -145,7 +149,7 @@ public class RemoteConfigLongPollService {
         HttpRequest request = new HttpRequest(url);
         request.setReadTimeout(LONG_POLLING_READ_TIMEOUT);
 
-
+        System.out.println("hold hererererere");
         final HttpResponse<List<ApolloConfigNotification>> response =
             m_httpUtil.doGet(request, m_responseType);
 
@@ -179,6 +183,7 @@ public class RemoteConfigLongPollService {
   }
 
   private void notify(ServiceDTO lastServiceDto, List<ApolloConfigNotification> notifications) {
+    logger.info("2=============================================2");
     if (notifications == null || notifications.isEmpty()) {
       return;
     }
@@ -202,6 +207,8 @@ public class RemoteConfigLongPollService {
   }
 
   private void updateNotifications(List<ApolloConfigNotification> deltaNotifications) {
+    logger.info("5=============================================5");
+
     for (ApolloConfigNotification notification : deltaNotifications) {
       if (Strings.isNullOrEmpty(notification.getNamespaceName())) {
         continue;
@@ -220,6 +227,8 @@ public class RemoteConfigLongPollService {
   }
 
   private void updateRemoteNotifications(List<ApolloConfigNotification> deltaNotifications) {
+    logger.info("7=============================================7");
+
     for (ApolloConfigNotification notification : deltaNotifications) {
       if (Strings.isNullOrEmpty(notification.getNamespaceName())) {
         continue;

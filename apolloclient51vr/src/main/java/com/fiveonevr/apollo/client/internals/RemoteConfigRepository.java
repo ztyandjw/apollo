@@ -78,7 +78,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
         m_configUtil.getOnErrorRetryInterval() * 8);
     gson = new Gson();
     this.trySync();
-    //间隔一定时间轮询
+    //
     this.schedulePeriodicRefresh();
     this.scheduleLongPollingRefresh();
   }

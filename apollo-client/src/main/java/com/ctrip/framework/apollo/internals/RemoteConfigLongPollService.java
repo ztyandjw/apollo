@@ -101,6 +101,7 @@ public class RemoteConfigLongPollService {
   }
 
   private void startLongPolling() {
+    logger.debug("==================================================================");
     if (!m_longPollStarted.compareAndSet(false, true)) {
       //already started
       return;
@@ -138,6 +139,8 @@ public class RemoteConfigLongPollService {
   }
 
   private void doLongPollingRefresh(String appId, String cluster, String dataCenter) {
+    logger.warn("11==================================================================11");
+
     final Random random = new Random();
     ServiceDTO lastServiceDto = null;
     while (!m_longPollingStopped.get() && !Thread.currentThread().isInterrupted()) {

@@ -93,6 +93,7 @@ public class LocalFileConfigRepository extends AbstractConfigRepository
       m_upstream.removeChangeListener(this);
     }
     m_upstream = upstreamConfigRepository;
+    //存储文件
     trySyncFromUpstream();
     upstreamConfigRepository.addChangeListener(this);
   }
