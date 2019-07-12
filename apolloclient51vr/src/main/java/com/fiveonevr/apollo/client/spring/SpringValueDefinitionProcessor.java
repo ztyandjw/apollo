@@ -20,12 +20,10 @@ public class SpringValueDefinitionProcessor implements BeanDefinitionRegistryPos
     }
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
-        System.out.println("11111111111111111");
     }
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-        System.out.println("2222222222222222");
 
     }
 }

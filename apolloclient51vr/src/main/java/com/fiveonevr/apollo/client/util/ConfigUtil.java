@@ -2,6 +2,7 @@ package com.fiveonevr.apollo.client.util;
 
 
 import com.fiveonevr.apollo.client.constant.ConfigConsts;
+import com.fiveonevr.apollo.client.constant.MetaDomainConsts;
 import com.fiveonevr.apollo.client.enums.Env;
 import com.fiveonevr.apollo.client.enums.EnvUtils;
 import com.fiveonevr.apollo.client.foundation.Foundation;
@@ -111,10 +112,9 @@ public class ConfigUtil {
     return Foundation.net().getHostAddress();
   }
 
-  //too complicated
-//  public String getMetaServerDomainName() {
-//    return MetaDomainConsts.getDomain(getApolloEnv());
-//  }
+  public String getMetaServerDomainName() {
+    return MetaDomainConsts.getDomain(getApolloEnv());
+  }
 
   private void initConnectTimeout() {
     String customizedConnectTimeout = System.getProperty("apollo.connectTimeout");

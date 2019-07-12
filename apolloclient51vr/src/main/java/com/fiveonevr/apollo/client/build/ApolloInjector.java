@@ -1,5 +1,6 @@
 package com.fiveonevr.apollo.client.build;
 import com.fiveonevr.apollo.client.exceptions.ApolloConfigException;
+import com.fiveonevr.apollo.client.foundation.ServiceBootstrap;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
