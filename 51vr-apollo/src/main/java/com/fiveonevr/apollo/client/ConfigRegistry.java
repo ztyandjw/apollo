@@ -7,4 +7,6 @@ package com.fiveonevr.apollo.client;
 public interface ConfigRegistry {
 
     void register(String namespace, ConfigFactory configFactory);
+
+    ConfigFactory getFactory(String namespace);
 }

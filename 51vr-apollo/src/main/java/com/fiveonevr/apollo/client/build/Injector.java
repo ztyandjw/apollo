@@ -6,8 +6,9 @@ package com.fiveonevr.apollo.client.build;
 public interface Injector {
 
 
+
   <T> T getInstance(Class<T> clazz);
 
 
-  <T> T getInstance(Class<T> clazz, String name);
+//  <T> T getInstance(Class<T> clazz, String name);
 }

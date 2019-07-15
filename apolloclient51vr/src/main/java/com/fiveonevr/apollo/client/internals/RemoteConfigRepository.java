@@ -185,7 +185,6 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
         url = assembleQueryConfigUrl(configService.getHomepageUrl(), appId, cluster, m_namespace,
                 dataCenter, m_remoteMessages.get(), m_configCache.get());
-
         logger.debug("Loading config from {}", url);
         HttpRequest request = new HttpRequest(url);
 
@@ -296,4 +295,6 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
 
     return services;
   }
+
+
 }
