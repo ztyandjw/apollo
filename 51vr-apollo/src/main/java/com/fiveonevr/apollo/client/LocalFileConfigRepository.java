@@ -1,6 +1,8 @@
 package com.fiveonevr.apollo.client;
 
+import com.fiveonevr.apollo.client.build.ApolloInjector;
 import com.fiveonevr.apollo.client.enums.ConfigSourceType;
+import com.fiveonevr.apollo.client.utils.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,14 +18,19 @@ public class LocalFileConfigRepository extends AbstractConfigRepository{
     private File baseDir;
     private volatile Properties properties;
     private volatile ConfigRepository upstreamRepository;
+    private ConfigUtil configUtil;
 
     public LocalFileConfigRepository(String namespace) {
         this(namespace, null);
+
 
     }
 
     public LocalFileConfigRepository(String namespace, ConfigRepository upstreamRepository) {
         this.namespace = namespace;
+        this.configUtil = ApolloInjector.getInstance(ConfigUtil.class);
+
+
     }
 
 
@@ -32,7 +39,15 @@ public class LocalFileConfigRepository extends AbstractConfigRepository{
     @Override
     protected void sync() {
 
+
+
     }
+
+
+    private boolean trySyncFromUpstream() {
+
+    }
+
 
     @Override
     public Properties getProperty() {

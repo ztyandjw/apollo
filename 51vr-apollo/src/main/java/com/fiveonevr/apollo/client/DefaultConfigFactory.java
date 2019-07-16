@@ -13,6 +13,7 @@ public class DefaultConfigFactory implements ConfigFactory{
     @Override
     public Config create(String namespace) {
         ConfigFileFormat format = determineFileFormat(namespace);
+        return null;
     }
 
     LocalFileConfigRepository createLocalConfigRepository(String namespace) {

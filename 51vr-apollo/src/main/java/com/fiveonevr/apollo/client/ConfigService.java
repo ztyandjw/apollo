@@ -1,7 +1,7 @@
 package com.fiveonevr.apollo.client;
 
 import com.fiveonevr.apollo.client.build.ApolloInjector;
-import com.fiveonevr.apollo.client.constants.ConfigConstants;
+import com.fiveonevr.apollo.client.constants.ConfigConsts;
 
 /**
  * @author T1m Zhang(49244143@qq.com) 2019/7/12.
@@ -36,7 +36,7 @@ public class ConfigService {
     }
 
     public static Config getAppConfig() {
-        return getConfig(ConfigConstants.NAMESPACE_APPLICATION);
+        return getConfig(ConfigConsts.NAMESPACE_APPLICATION);
     }
 
     public static Config getConfig(String namespace) {
