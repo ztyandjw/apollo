@@ -18,7 +18,7 @@ public class DefaultConfigFactoryManager implements  ConfigFactoryManager{
 
     //
     public DefaultConfigFactoryManager() {
-        ApolloInjector.getInstance(ConfigRegistry.class);
+        this.configRegistry = ApolloInjector.getInstance(ConfigRegistry.class);
     }
 
 

@@ -8,7 +8,7 @@ public class ApolloConfig {
     private String cluster;
     private String namespace;
     private Map<String,String> configurations;
-    private String release;
+    private String releaseKey;
 
     public ApolloConfig() {
     }
@@ -18,7 +18,7 @@ public class ApolloConfig {
         this.cluster = cluster;
         this.namespace = namespace;
         this.configurations = configurations;
-        this.release = release;
+        this.releaseKey = release;
     }
 
     public String getAppId() {
@@ -53,12 +53,12 @@ public class ApolloConfig {
         this.configurations = configurations;
     }
 
-    public String getRelease() {
-        return release;
+    public String getReleaseKey() {
+        return releaseKey;
     }
 
     public void setRelease(String release) {
-        this.release = release;
+        this.releaseKey = release;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class ApolloConfig {
         sb.append(", cluster='").append(cluster).append('\'');
         sb.append(", namespaceName='").append(namespace).append('\'');
         sb.append(", configurations=").append(configurations);
-        sb.append(", releaseKey='").append(release).append('\'');
+        sb.append(", releaseKey='").append(releaseKey).append('\'');
         sb.append('}');
         return sb.toString();
     }

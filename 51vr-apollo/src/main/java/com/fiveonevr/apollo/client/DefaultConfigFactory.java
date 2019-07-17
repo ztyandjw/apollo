@@ -1,6 +1,7 @@
 package com.fiveonevr.apollo.client;
 
 import com.fiveonevr.apollo.client.enums.ConfigFileFormat;
+import com.fiveonevr.apollo.client.utils.DefaultConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,8 @@ public class DefaultConfigFactory implements ConfigFactory{
     @Override
     public Config create(String namespace) {
         ConfigFileFormat format = determineFileFormat(namespace);
-        return null;
+        return new DefaultConfig(namespace, createLocalConfigRepository(namespace));
+
     }
 
     LocalFileConfigRepository createLocalConfigRepository(String namespace) {

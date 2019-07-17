@@ -1,5 +1,6 @@
 package com.fiveonevr.apollo.client.constants;
 
+import com.fiveonevr.apollo.client.utils.ClassLoaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

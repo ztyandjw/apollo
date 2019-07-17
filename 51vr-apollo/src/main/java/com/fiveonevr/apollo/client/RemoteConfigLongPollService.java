@@ -17,6 +17,7 @@ import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
 import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.RateLimiter;
+import com.google.common.util.concurrent.Service;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,7 +175,7 @@ public class RemoteConfigLongPollService {
                 if(response.getStatusCode() == 200 && response.getBody() != null) {
                     this.updateNotifications(response.getBody());
                     this.updateRemoteNotifications(response.getBody());
-                    this.notify(response.getBody());
+                    this.notify(lastServiceDTO, response.getBody());
                 }
 
                 if(response.getStatusCode() == 304 && random.nextBoolean()) {
@@ -238,7 +239,7 @@ public class RemoteConfigLongPollService {
 
 
     //notify remoteconfigRepository
-    private void notify(List<ApolloConfigNotification> deltaNotifications) {
+    private void notify(ServiceDTO serviceDTO, List<ApolloConfigNotification> deltaNotifications) {
         if(deltaNotifications == null || notifications.isEmpty()) {
             return;
         }
@@ -250,7 +251,7 @@ public class RemoteConfigLongPollService {
             tobeNotified.addAll(longPollNamespaces.get(String.format("%s.%s", namespaceName, ConfigFileFormat.Properties.getValue())));
             for(RemoteConfigRepository remoteConfigRepository: tobeNotified) {
                 try {
-                    //todo
+                    remoteConfigRepository.onLongPollNotified(serviceDTO, remoteMessages);
                 }catch (Throwable ex) {
                     logger.error(ex.toString());
                 }

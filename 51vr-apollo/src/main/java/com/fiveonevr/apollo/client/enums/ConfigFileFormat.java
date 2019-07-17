@@ -50,4 +50,10 @@ public enum ConfigFileFormat {
             return false;
         }
     }
+
+
+    //如果是yaml的返回true
+    public static boolean isPropertiesCompatible(ConfigFileFormat format) {
+        return format == YAML || format == YML;
+    }
 }

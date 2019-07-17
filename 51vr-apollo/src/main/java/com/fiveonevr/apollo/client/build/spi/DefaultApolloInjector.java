@@ -1,9 +1,13 @@
 package com.fiveonevr.apollo.client.build.spi;
 
+import com.fiveonevr.apollo.client.*;
 import com.fiveonevr.apollo.client.build.Injector;
 import com.fiveonevr.apollo.client.exceptions.ApolloConfigException;
+import com.fiveonevr.apollo.client.utils.ConfigUtil;
+import com.fiveonevr.apollo.client.utils.HttpUtil;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +41,14 @@ public class DefaultApolloInjector implements Injector {
 
         @Override
         protected void configure() {
-            //bind some clazz
+            bind(ConfigManager.class).to(DefaultConfigManager.class).in(Singleton.class);
+            bind(ConfigFactoryManager.class).to(DefaultConfigFactoryManager.class).in(Singleton.class);
+            bind(ConfigRegistry.class).to(DefaultConfigRegistry.class).in(Singleton.class);
+            bind(ConfigFactory.class).to(DefaultConfigFactory.class).in(Singleton.class);
+            bind(ConfigUtil.class).in(Singleton.class);
+            bind(HttpUtil.class).in(Singleton.class);
+            bind(ConfigServiceLocator.class).in(Singleton.class);
+            bind(RemoteConfigLongPollService.class).in(Singleton.class);
         }
     }
 

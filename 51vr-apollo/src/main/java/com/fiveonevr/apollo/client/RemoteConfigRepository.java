@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class RemoteConfigRepository extends  AbstractConfigRepository{
+public class RemoteConfigRepository extends AbstractConfigRepository {
     private final ConfigUtil configUtil;
     private static final Joiner STRING_JOINER = Joiner.on(ConfigConsts.CLUSTER_NAMESPACE_SEPARATOR);
     private final AtomicBoolean configNeedForceRefresh;
@@ -58,6 +58,7 @@ public class RemoteConfigRepository extends  AbstractConfigRepository{
     }
 
     public RemoteConfigRepository(String namespace) {
+        this.configCaches = new AtomicReference<>();
         this.remoteConfigLongPollService = ApolloInjector.getInstance(RemoteConfigLongPollService.class);
         this.remoteMessages = new AtomicReference<>();
         this.longPollServiceDTO  = new AtomicReference<>();
@@ -167,6 +168,17 @@ public class RemoteConfigRepository extends  AbstractConfigRepository{
     }
 
 
+    public void onLongPollNotified(ServiceDTO longPollNotifiedServiceDto, ApolloNotificationMessages remoteMessages) {
+        longPollServiceDTO.set(longPollNotifiedServiceDto);
+        this.remoteMessages.set(remoteMessages);
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                configNeedForceRefresh.set(true);
+                trySync();
+            }
+        });
+    }
 
 
     //sync同步方法,检查apolloconfig是否与previous相同，不相同缓存起来
@@ -192,9 +204,15 @@ public class RemoteConfigRepository extends  AbstractConfigRepository{
     @Override
     public Properties getProperty() {
         if(configCaches .get() == null) {
+            //同步并且缓存
             this.sync();
         }
         return this.transformApolloConfigToProperties(this.configCaches.get());
+    }
+
+    @Override
+    public void setUpstreamRepository(ConfigRepository upstreamRepository) {
+
     }
 
     //将ApolloConfig转为Properties
@@ -205,10 +223,6 @@ public class RemoteConfigRepository extends  AbstractConfigRepository{
     }
 
 
-    @Override
-    public void setUpstreamRepository(ConfigRegistry upstreamRepository) {
-
-    }
 
     @Override
     public ConfigSourceType getSourceType() {
@@ -236,7 +250,7 @@ public class RemoteConfigRepository extends  AbstractConfigRepository{
         Map<String, String> queryParams = Maps.newHashMap();
 
         if (previousConfig != null) {
-            queryParams.put("releaseKey", queryParamEscaper.escape(previousConfig.getRelease()));
+            queryParams.put("releaseKey", queryParamEscaper.escape(previousConfig.getReleaseKey()));
         }
 
         if (!Strings.isNullOrEmpty(dataCenter)) {

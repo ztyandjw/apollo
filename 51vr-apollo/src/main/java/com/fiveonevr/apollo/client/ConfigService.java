@@ -12,7 +12,7 @@ public class ConfigService {
     private volatile  ConfigManager configManager;
     private volatile  ConfigRegistry configRegistry;
 
-    //单例模式获取configmanager
+    //单例模式获取ConfigManager，Config的管理类
     private ConfigManager getManager() {
         if(configManager == null) {
             synchronized (this) {
@@ -24,6 +24,7 @@ public class ConfigService {
         return configManager;
     }
 
+    //单例模式获取ConfigRegistry
     private ConfigRegistry getConfigRegistry() {
         if(configRegistry == null) {
             synchronized (this) {
@@ -35,6 +36,7 @@ public class ConfigService {
         return configRegistry;
     }
 
+    //通过namespace application获取config
     public static Config getAppConfig() {
         return getConfig(ConfigConsts.NAMESPACE_APPLICATION);
     }
@@ -42,7 +44,4 @@ public class ConfigService {
     public static Config getConfig(String namespace) {
         return configService.getManager().getConfig(namespace);
     }
-
-
-
 }

@@ -1,6 +1,5 @@
 package com.fiveonevr.apollo.client;
 
-import com.fiveonevr.apollo.client.utils.ExceptionUtils;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
