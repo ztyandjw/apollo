@@ -29,7 +29,7 @@ public abstract class AbstractConfig implements Config {
   private static final Logger logger = LoggerFactory.getLogger(AbstractConfig.class);
 
   private static final ExecutorService m_executorService;
-
+  //copyOnWrite
   private final List<ConfigChangeListener> m_listeners = Lists.newCopyOnWriteArrayList();
   private final Map<ConfigChangeListener, Set<String>> m_interestedKeys = Maps.newConcurrentMap();
   private final ConfigUtil m_configUtil;
@@ -158,8 +158,9 @@ public abstract class AbstractConfig implements Config {
     return m_listeners.remove(listener);
   }
 
-  public List<ConfigChange> calcPropertyChanges(String namespace, Properties previous,
-                                         Properties current) {
+
+
+  public List<ConfigChange> calcPropertyChanges(String namespace, Properties previous, Properties current) {
     if (previous == null) {
       previous = new Properties();
     }
@@ -171,8 +172,10 @@ public abstract class AbstractConfig implements Config {
     Set<String> previousKeys = previous.stringPropertyNames();
     Set<String> currentKeys = current.stringPropertyNames();
 
+    //本次更新多出来的keys
     Set<String> commonKeys = Sets.intersection(previousKeys, currentKeys);
     Set<String> newKeys = Sets.difference(currentKeys, commonKeys);
+    //本次更新减去的keys
     Set<String> removedKeys = Sets.difference(previousKeys, commonKeys);
 
     List<ConfigChange> changes = Lists.newArrayList();
@@ -534,31 +537,7 @@ public abstract class AbstractConfig implements Config {
 //    }
 //  }
 //
-//  protected void fireConfigChange(final ConfigChangeEvent changeEvent) {
-//    for (final ConfigChangeListener listener : m_listeners) {
-//      // check whether the listener is interested in this change event
-//      if (!isConfigChangeListenerInterested(listener, changeEvent)) {
-//        continue;
-//      }
-//      m_executorService.submit(new Runnable() {
-//        @Override
-//        public void run() {
-//          String listenerName = listener.getClass().getName();
-//          Transaction transaction = Tracer.newTransaction("Apollo.ConfigChangeListener", listenerName);
-//          try {
-//            listener.onChange(changeEvent);
-//            transaction.setStatus(Transaction.SUCCESS);
-//          } catch (Throwable ex) {
-//            transaction.setStatus(ex);
-//            Tracer.logError(ex);
-//            logger.error("Failed to invoke config change listener {}", listenerName, ex);
-//          } finally {
-//            transaction.complete();
-//          }
-//        }
-//      });
-//    }
-//  }
+
 //
 //  private boolean isConfigChangeListenerInterested(ConfigChangeListener configChangeListener, ConfigChangeEvent configChangeEvent) {
 //    Set<String> interestedKeys = m_interestedKeys.get(configChangeListener);
@@ -588,47 +567,5 @@ public abstract class AbstractConfig implements Config {
 //    }
 //
 //    return false;
-//  }
-//
-//  List<ConfigChange> calcPropertyChanges(String namespace, Properties previous,
-//                                         Properties current) {
-//    if (previous == null) {
-//      previous = new Properties();
-//    }
-//
-//    if (current == null) {
-//      current = new Properties();
-//    }
-//
-//    Set<String> previousKeys = previous.stringPropertyNames();
-//    Set<String> currentKeys = current.stringPropertyNames();
-//
-//    Set<String> commonKeys = Sets.intersection(previousKeys, currentKeys);
-//    Set<String> newKeys = Sets.difference(currentKeys, commonKeys);
-//    Set<String> removedKeys = Sets.difference(previousKeys, commonKeys);
-//
-//    List<ConfigChange> changes = Lists.newArrayList();
-//
-//    for (String newKey : newKeys) {
-//      changes.add(new ConfigChange(namespace, newKey, null, current.getProperty(newKey),
-//          PropertyChangeType.ADDED));
-//    }
-//
-//    for (String removedKey : removedKeys) {
-//      changes.add(new ConfigChange(namespace, removedKey, previous.getProperty(removedKey), null,
-//          PropertyChangeType.DELETED));
-//    }
-//
-//    for (String commonKey : commonKeys) {
-//      String previousValue = previous.getProperty(commonKey);
-//      String currentValue = current.getProperty(commonKey);
-//      if (Objects.equal(previousValue, currentValue)) {
-//        continue;
-//      }
-//      changes.add(new ConfigChange(namespace, commonKey, previousValue, currentValue,
-//          PropertyChangeType.MODIFIED));
-//    }
-//
-//    return changes;
 //  }
 }

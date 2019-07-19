@@ -49,7 +49,6 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
         m_configRepository = configRepository;
         m_configProperties = new AtomicReference<>();
         m_warnLogRateLimiter = RateLimiter.create(0.017); // 1 warning log output per minute
-
         initialize();
     }
 
@@ -66,26 +65,22 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
         }
     }
 
+    //系统变量优先级最高，然后是缓存，然后是环境变量，最后是配置文件
     @Override
     public String getProperty(String key, String defaultValue) {
-        // step 1: check system properties, i.e. -Dkey=value
+        //查询环境变量-DCompany=51vr
         String value = System.getProperty(key);
-
-        // step 2: check local cached properties file
+        //查询缓存
         if (value == null && m_configProperties.get() != null) {
             value = m_configProperties.get().getProperty(key);
         }
 
-        /**
-         * step 3: check env variable, i.e. PATH=...
-         * normally system environment variables are in UPPERCASE, however there might be exceptions.
-         * so the caller should provide the key in the right case
-         */
+        //这个是环境变量，比如$PATH
         if (value == null) {
             value = System.getenv(key);
         }
 
-        // step 4: check properties file from classpath
+        //从代码META-INF/config/xx.properties获取
         if (value == null && m_resourceProperties != null) {
             value = (String) m_resourceProperties.get(key);
         }
@@ -93,7 +88,7 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
         if (value == null && m_configProperties.get() == null && m_warnLogRateLimiter.tryAcquire()) {
             logger.warn("Could not load config for namespace {} from Apollo, please check whether the configs are released in Apollo! Return default value now!", m_namespace);
         }
-
+        //value为null 返回默认的吧
         return value == null ? defaultValue : value;
     }
 
@@ -168,7 +163,6 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
         if (properties == null) {
             return Collections.emptySet();
         }
-
         return stringPropertyNames(properties);
     }
 
@@ -195,24 +189,23 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
         return h.keySet();
     }
 
+    //LocalFileConfigRepository发生变动
     @Override
     public synchronized void onRepositoryChange(String namespace, Properties newProperties) {
         //如果一致，直接返回
         if (newProperties.equals(m_configProperties.get())) {
             return;
         }
-
         ConfigSourceType sourceType = m_configRepository.getSourceType();
         Properties newConfigProperties = new Properties();
         newConfigProperties.putAll(newProperties);
-
+        //ConfigChange是具体的某个property的change，更新并且计算
         Map<String, ConfigChange> actualChanges = updateAndCalcConfigChanges(newConfigProperties, sourceType);
-
         //check double checked result
         if (actualChanges.isEmpty()) {
             return;
         }
-
+        //通知他所对应的listeners
         this.fireConfigChange(new ConfigChangeEvent(m_namespace, actualChanges));
 
     }
@@ -222,13 +215,13 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
         m_sourceType = sourceType;
     }
 
-    private Map<String, ConfigChange> updateAndCalcConfigChanges(Properties newConfigProperties,
-                                                                 ConfigSourceType sourceType) {
-        List<ConfigChange> configChanges =
-                calcPropertyChanges(m_namespace, m_configProperties.get(), newConfigProperties);
 
-        ImmutableMap.Builder<String, ConfigChange> actualChanges =
-                new ImmutableMap.Builder<>();
+
+    private Map<String, ConfigChange> updateAndCalcConfigChanges(Properties newConfigProperties, ConfigSourceType sourceType) {
+        //获取本次与上次的Config
+        List<ConfigChange> configChanges = calcPropertyChanges(m_namespace, m_configProperties.get(), newConfigProperties);
+
+        ImmutableMap.Builder<String, ConfigChange> actualChanges = new ImmutableMap.Builder<>();
 
         /** === Double check since DefaultConfig has multiple config sources ==== **/
 
@@ -269,7 +262,6 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
                     actualChanges.put(change.getPropertyName(), change);
                     break;
                 default:
-                    //do nothing
                     break;
             }
         }
@@ -283,7 +275,6 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
         String name = String.format("META-INF/config/%s.properties", namespace);
         InputStream in = ClassLoaderUtil.getLoader().getResourceAsStream(name);
         Properties properties = null;
-
         if (in != null) {
             properties = new Properties();
 
@@ -299,7 +290,6 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
                 }
             }
         }
-
         return properties;
     }
 
