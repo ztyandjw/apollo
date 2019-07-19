@@ -5,6 +5,6 @@ package com.fiveonevr.apollo.client;
  */
 
 public interface ConfigFactory {
-
+    //定义获取Config
     Config create(String namespace);
 }

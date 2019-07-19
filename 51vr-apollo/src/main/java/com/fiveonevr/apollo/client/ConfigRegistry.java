@@ -5,8 +5,8 @@ package com.fiveonevr.apollo.client;
  */
 
 public interface ConfigRegistry {
-
+    //定义注册namespace，ConfigFactory的映射
     void register(String namespace, ConfigFactory configFactory);
-
+    //定义获取ConfigFactory
     ConfigFactory getFactory(String namespace);
 }

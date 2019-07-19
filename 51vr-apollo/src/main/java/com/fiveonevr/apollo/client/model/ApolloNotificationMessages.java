@@ -12,10 +12,12 @@ public class ApolloNotificationMessages {
   private Map<String, Long> details;
 
   public ApolloNotificationMessages() {
+
     this(Maps.<String, Long>newHashMap());
   }
 
   private ApolloNotificationMessages(Map<String, Long> details) {
+
     this.details = details;
   }
 
@@ -43,13 +45,14 @@ public class ApolloNotificationMessages {
     this.details = details;
   }
 
+  //
   public void mergeFrom(ApolloNotificationMessages source) {
     if (source == null) {
       return;
     }
-
+    //source.getDetails().entrySet()返回Set，可以迭代，Map.Entry<String,Long>
     for (Map.Entry<String, Long> entry : source.getDetails().entrySet()) {
-      //to make sure the notification id always grows bigger
+      //为了保证notification Id，比目前id大
       if (this.has(entry.getKey()) &&
           this.get(entry.getKey()) >= entry.getValue()) {
         continue;

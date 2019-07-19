@@ -1,13 +1,13 @@
-package com.fiveonevr.apollo.client.utils;
+package com.fiveonevr.apollo.client;
 
-import com.fiveonevr.apollo.client.ConfigChangeListener;
-import com.fiveonevr.apollo.client.ConfigRepository;
-import com.fiveonevr.apollo.client.RepositoryChangeListener;
 import com.fiveonevr.apollo.client.enums.ConfigSourceType;
 import com.fiveonevr.apollo.client.enums.PropertyChangeType;
 import com.fiveonevr.apollo.client.model.ConfigChange;
 import com.fiveonevr.apollo.client.model.ConfigChangeEvent;
-import com.google.common.cache.Cache;
+import com.fiveonevr.apollo.client.utils.AbstractConfig;
+import com.fiveonevr.apollo.client.utils.ApolloThreadFactory;
+import com.fiveonevr.apollo.client.utils.ClassLoaderUtil;
+import com.fiveonevr.apollo.client.utils.ExceptionUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
@@ -38,37 +37,28 @@ public class DefaultConfig extends AbstractConfig implements RepositoryChangeLis
     private final RateLimiter m_warnLogRateLimiter;
     private final List<ConfigChangeListener> m_listeners = Lists.newCopyOnWriteArrayList();
     private final Map<ConfigChangeListener, Set<String>> m_interestedKeys = Maps.newConcurrentMap();
-//    private final AtomicLong m_configVersion;
-
-
-    static {
-        m_executorService = Executors.newCachedThreadPool(ApolloThreadFactory
-                .create("Config", true));
-    }
     private volatile ConfigSourceType m_sourceType = ConfigSourceType.NONE;
 
-    /**
-     * Constructor.
-     *
-     * @param namespace        the namespace of this config instance
-     * @param configRepository the config repository for this config instance
-     */
+
+    static { m_executorService = Executors.newCachedThreadPool(ApolloThreadFactory.create("Config", true));
+    }
+
     public DefaultConfig(String namespace, ConfigRepository configRepository) {
         m_namespace = namespace;
-
         m_resourceProperties = loadFromResource(m_namespace);
         m_configRepository = configRepository;
         m_configProperties = new AtomicReference<>();
         m_warnLogRateLimiter = RateLimiter.create(0.017); // 1 warning log output per minute
+
         initialize();
     }
 
+    //将本地缓存进行更新，将自己注册到localfileconfigRepository
     private void initialize() {
         try {
             updateConfig(m_configRepository.getProperty(), m_configRepository.getSourceType());
         } catch (Throwable ex) {
-            logger.warn("Init Apollo Local Config failed - namespace: {}, reason: {}.",
-                    m_namespace, ExceptionUtils.getDetailMessage(ex));
+            logger.warn("Init Apollo Local Config failed - namespace: {}, reason: {}.", m_namespace, ExceptionUtils.getDetailMessage(ex));
         } finally {
             //register the change listener no matter config repository is working or not
             //so that whenever config repository is recovered, config could get changed

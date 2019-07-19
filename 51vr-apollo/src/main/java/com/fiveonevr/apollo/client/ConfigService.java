@@ -7,16 +7,20 @@ import com.fiveonevr.apollo.client.constants.ConfigConsts;
  * @author T1m Zhang(49244143@qq.com) 2019/7/12.
  */
 
+//对外暴露的ConfigService
 public class ConfigService {
+    //主体
     private static final ConfigService configService = new ConfigService();
-    private volatile  ConfigManager configManager;
-    private volatile  ConfigRegistry configRegistry;
+    //单例模式，需要用volatle 或者 final修饰
+    private volatile ConfigManager configManager;
+    private volatile ConfigRegistry configRegistry;
 
-    //单例模式获取ConfigManager，Config的管理类
+    //单例获取configManager
     private ConfigManager getManager() {
         if(configManager == null) {
             synchronized (this) {
                 if(configManager == null) {
+                    //通过guava类加载器获取
                     configManager = ApolloInjector.getInstance(ConfigManager.class);
                 }
             }
@@ -41,6 +45,7 @@ public class ConfigService {
         return getConfig(ConfigConsts.NAMESPACE_APPLICATION);
     }
 
+    //获取ConfigManager，调用ConfigManager.getConfig方法
     public static Config getConfig(String namespace) {
         return configService.getManager().getConfig(namespace);
     }

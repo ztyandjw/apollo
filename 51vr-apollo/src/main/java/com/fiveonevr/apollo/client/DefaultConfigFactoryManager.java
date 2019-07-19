@@ -1,39 +1,38 @@
 package com.fiveonevr.apollo.client;
 
 import com.fiveonevr.apollo.client.build.ApolloInjector;
-import com.fiveonevr.apollo.client.build.spi.DefaultApolloInjector;
 import com.google.common.collect.Maps;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-//ConfigFactory管理类的实现类
-//通过registry-> configfactory-> config
+//通过此类获取ConfigFactory
 public class DefaultConfigFactoryManager implements  ConfigFactoryManager{
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultConfigFactoryManager.class);
-    private ConfigRegistry configRegistry;
+    //通过ConfigRegistry获取ConfigFactory
+    private final ConfigRegistry configRegistry;
+    //ConfigFactory的缓存
     private Map<String, ConfigFactory> caches = Maps.newConcurrentMap();
 
-    //
+
     public DefaultConfigFactoryManager() {
+        //通过guava获取configRegistry的实例
         this.configRegistry = ApolloInjector.getInstance(ConfigRegistry.class);
     }
 
 
     @Override
     public ConfigFactory getConfigFactory(String namespace) {
+        //首先查看registry能否获取到
         ConfigFactory configFactory = configRegistry.getFactory(namespace);
         if(configFactory != null) {
             return configFactory;
         }
+        //再次查看本地缓存能否获取到
         configFactory = caches.get(namespace);
-
         if(configFactory != null) {
             return configFactory;
         }
-
+        //都拿不到，通过guava获取实例
         configFactory = ApolloInjector.getInstance(ConfigFactory.class);
         caches.put(namespace, configFactory);
         return configFactory;

@@ -1,34 +1,34 @@
 package com.fiveonevr.apollo.client;
 
 import com.fiveonevr.apollo.client.enums.ConfigFileFormat;
-import com.fiveonevr.apollo.client.utils.DefaultConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DefaultConfigFactory implements ConfigFactory{
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultConfigFactory.class);
 
 
-
+    //Config最终通过ConfigFactory获取
     @Override
     public Config create(String namespace) {
-        ConfigFileFormat format = determineFileFormat(namespace);
+        //目前仅支持通用模式
+        //ConfigFileFormat format = determineFileFormat(namespace);
+
         return new DefaultConfig(namespace, createLocalConfigRepository(namespace));
 
     }
 
-    LocalFileConfigRepository createLocalConfigRepository(String namespace) {
+    private LocalFileConfigRepository createLocalConfigRepository(String namespace) {
+        //localConfigRepository 入参namespace 和 RemoteConfigRepository对象
         return new LocalFileConfigRepository(namespace, createRemoteConfigRepository(namespace));
     }
 
-    RemoteConfigRepository createRemoteConfigRepository(String namespace) {
+    //RemoteConfigRepository是LocalFileConfigRepository的入参
+    private RemoteConfigRepository createRemoteConfigRepository(String namespace) {
         return new RemoteConfigRepository(namespace);
     }
 
 
     //根据namespace判断属于哪种configfileformat
-    ConfigFileFormat determineFileFormat(String namespace) {
+    private ConfigFileFormat determineFileFormat(String namespace) {
         String lowerCase = namespace.toLowerCase();
         for(ConfigFileFormat configFileFormat : ConfigFileFormat.values()) {
             if(lowerCase.endsWith("." + configFileFormat.getValue())) {

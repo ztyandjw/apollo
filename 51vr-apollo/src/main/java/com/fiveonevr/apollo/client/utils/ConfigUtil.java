@@ -205,8 +205,8 @@ public class ConfigUtil {
     if (!Strings.isNullOrEmpty(cacheRoot)) {
       return cacheRoot + File.separator + getAppId();
     }
-
-    cacheRoot = isOSWindows() ? "C:\\opt\\data\\%s" : "/opt/data/%s";
+    //这里，cachedir默认没有设置
+    cacheRoot = isOSWindows() ? "C:\\\\opt\\\\data\\\\%s" : "/opt/data/%s";
     return String.format(cacheRoot, getAppId());
   }
 

@@ -4,6 +4,8 @@ package com.fiveonevr.apollo.client.core;
  * @author T1m Zhang(49244143@qq.com) 2019/7/15.
  */
 
+
+//指数级别增长策略
 public class ExponentialSchedulePolicy implements SchedulePolicy{
 
     private final long delayTimeLowerBound;
@@ -18,6 +20,7 @@ public class ExponentialSchedulePolicy implements SchedulePolicy{
     @Override
     public long fail() {
         long delayTime = this.lastDelayTime;
+        //说明第一次进来，或者前一次执行成功，将delayTime置为下限数字
         if (delayTime == 0) {
             delayTime = this.delayTimeLowerBound;
         } else {

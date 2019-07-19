@@ -1,5 +1,6 @@
 package com.fiveonevr.apollo.client;
 
+import com.fiveonevr.apollo.client.utils.ExceptionUtils;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,18 +11,21 @@ import java.util.Properties;
 public abstract class AbstractConfigRepository implements  ConfigRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractConfigRepository.class);
+    //listeners使用copyOnWriteArrayList<RepositoryChangeListener>
     private List<RepositoryChangeListener> listeners = Lists.newCopyOnWriteArrayList();
+    //抽象方法，各自实现
     protected abstract void sync();
 
-    //
     protected boolean trySync() {
         try {
             sync();
             return true;
         }catch (Throwable ex) {
+            logger.warn("Sync config failed, will retry. Repository {}, reason: {}", this.getClass(), ExceptionUtils.getDetailMessage(ex));
             return false;
         }
     }
+
 
     @Override
     public void addChangeListener(RepositoryChangeListener listener) {
@@ -44,7 +48,4 @@ public abstract class AbstractConfigRepository implements  ConfigRepository {
             }
         }
     }
-
-
-
 }

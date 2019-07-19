@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -51,8 +52,7 @@ public class ConfigServiceLocator {
     public ConfigServiceLocator() {
         List<ServiceDTO> initial = Lists.newArrayList();
         configServices = new AtomicReference<>(initial);
-        responseType = new TypeToken<List<ServiceDTO>>() {
-        }.getType();
+        responseType = new TypeToken<List<ServiceDTO>>() {}.getType();
         httpUtil = ApolloInjector.getInstance(HttpUtil.class);
         configUtil = ApolloInjector.getInstance(ConfigUtil.class);
         executorService = Executors.newScheduledThreadPool(1,
@@ -102,16 +102,16 @@ public class ConfigServiceLocator {
     }
 
     private synchronized void updateConfigServices() {
+        //http://10.100.100.20:8080/services/config?appId=001&ip=10.2.10.38
         String url = assembleMetaServiceUrl();
-
         HttpRequest request = new HttpRequest(url);
         int maxRetries = 2;
         Throwable exception = null;
-
         for (int i = 0; i < maxRetries; i++) {
             try {
                 HttpResponse<List<ServiceDTO>> response = httpUtil.doGet(request, responseType);
                 List<ServiceDTO> services = response.getBody();
+                //返回response为null 或者长度为0
                 if (services == null || services.isEmpty()) {
                     logConfigService("Empty response!");
                     continue;
@@ -119,17 +119,17 @@ public class ConfigServiceLocator {
                 setConfigServices(services);
                 return;
             } catch (Throwable ex) {
+                logger.error("ApolloConfigException: ", ExceptionUtils.getDetailMessage(ex));
                 exception = ex;
             } finally {
+                //ignore
             }
-
             try {
                 configUtil.getOnErrorRetryIntervalTimeUnit().sleep(configUtil.getOnErrorRetryInterval());
             } catch (InterruptedException ex) {
                 //ignore
             }
         }
-
         throw new ApolloConfigException(
                 String.format("Get config services failed from %s", url), exception);
     }
