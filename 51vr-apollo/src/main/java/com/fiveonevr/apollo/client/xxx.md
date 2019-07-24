@@ -1,7 +1,7 @@
 # 配置中心
 
 
-## 为什么需要配置中心
+## 一、为什么需要配置中心
 
 + 配置治理
 + 权限管控
@@ -13,7 +13,7 @@
 + 配置管理（application，namespace，cluster、env）
 + 实时生效（热发布）
 
-## 配置中心选型
+## 二、配置中心选型
 
 | apollo   |      nacos      |consul
 |----------|:-------------:|------|
@@ -30,9 +30,9 @@
 
 
 
-## 架构解析
+## 三、架构设计
 
-### 四大核心模块
+### 3.1 四大核心模块
 
 1. ConfigService
 
@@ -58,7 +58,7 @@
     * 通过MetaServer获取AdminServiced的服务列表
     * 使用客户端软负载SLB方式调用AdminService
     
-### 三个辅助服务发现模块
+### 3.2 三个辅助服务发现模块
 
 1. Eureka
     
@@ -74,7 +74,7 @@
 3. Nginx
     对于metaserver做软负载均衡
     
-### 架构演进
+### 3.3 架构演进
 
 1. V1
 
@@ -102,6 +102,34 @@
 
 
 
+### 3.4 服务端设计
+
+#### 3.4.1 配置发布后的实时推送设计
+
+![infra](./3.4.1.png)
+
+简单描述了配置发布的大致过程
+
+1. 用户在portal操作配置发布
+2. Portal调用Admin Service的接口操作发布
+3. Admin Service发布配置后，发送ReleaseMessage给各个Config Service
+4. Config Service收到ReleaseMessage后，通知对应的客户端
+
+#### 3.4.2 发送releaseMessage的实现方式
+
+Admin Service在配置发布后，需要通知所有Config Service，这是个典型的消息使用场景，在实现上，为了尽量减少外部依赖，通过数据库实现了简单消息队列
+
+1. AdminService在配置发布后往表里插入一条消息
+2. ConfigService会有一个线程每条扫描，查看是否有新消息
+3. ConfigService如果发现有新的消息，就会通知所有的消息监听器
+4. 通知客户端消息变更
+
+![infra](./3.4.2.png)
+
+
+### 3.5 客户端设计
+
+1.客户端和服务端保持了一个长连接，从而可以第一时间
 
 
 
