@@ -211,7 +211,7 @@ public class RemoteConfigRepository extends AbstractConfigRepository {
     //首先从本地缓存获取，如果没有，进行sync同步，将远程数据同步到本地缓存
     @Override
     public Properties getProperty() {
-        if(configCaches .get() == null) {
+        if(configCaches.get() == null) {
             //同步并且缓存
             this.sync();
         }
