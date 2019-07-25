@@ -227,10 +227,10 @@ public class RemoteConfigLongPollService {
 
     //更新notifications缓存
     private void updateNotifications(List<ApolloConfigNotification> deltaNotifications) {
-        for (ApolloConfigNotification notification : deltaNotifications) {
-            if (Strings.isNullOrEmpty(notification.getNamespaceName())) {
-                continue;
-            }
+                for (ApolloConfigNotification notification : deltaNotifications) {
+                    if (Strings.isNullOrEmpty(notification.getNamespaceName())) {
+                        continue;
+                    }
             String namespaceName = notification.getNamespaceName();
             if (notifications.containsKey(namespaceName)) {
                 notifications.put(namespaceName, notification.getNotificationId());
